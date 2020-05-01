@@ -60,4 +60,38 @@ spec:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: store
 {{ with .Values.store.http.service.matchLabels }}{{ toYaml . | indent 4 }}{{ end }}
+
+---
+{{- $root := . }}
+{{- range $index, $partion := .Values.store.timePartioning }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "thanos.componentname" (list $ "store") }}-grpc-{{ $index }}
+  {{- with $root.Values.store.grpc.service.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "thanos.name" $root }}
+    helm.sh/chart: {{ include "thanos.chart" $root }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    app.kubernetes.io/version: {{ $.Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: store
+{{ with $root.Values.store.grpc.service.labels }}{{ toYaml . | indent 4 }}{{ end }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ $root.Values.store.grpc.port }}
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+  selector:
+    app.kubernetes.io/name: {{ include "thanos.name" $root }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/component: store
+    app.kubernetes.io/partition: "{{ $index }}"
+{{ with $root.Values.store.grpc.service.matchLabels }}{{ toYaml . | indent 4 }}{{ end }}
+{{- end }}
+
 {{- end -}}
