@@ -61,9 +61,9 @@ spec:
     app.kubernetes.io/component: store
 {{ with .Values.store.http.service.matchLabels }}{{ toYaml . | indent 4 }}{{ end }}
 
----
 {{- $root := . }}
 {{- range $index, $partion := .Values.store.timePartioning }}
+---
 apiVersion: v1
 kind: Service
 metadata:
