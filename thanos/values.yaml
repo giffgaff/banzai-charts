@@ -1,6 +1,6 @@
 image:
   repository: quay.io/thanos/thanos
-  tag: v0.10.1
+  tag: v0.13.0
   pullPolicy: IfNotPresent
 
 store:
@@ -97,6 +97,8 @@ store:
     # Set up ingress for the grpc service
     ingress:
       enabled: false
+      # Set default backend for ingress
+      defaultBackend: false
       annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -125,6 +127,8 @@ store:
     # Set up ingress for the http service
     ingress:
       enabled: false
+      # Set default backend for ingress
+      defaultBackend: false
       annotations: {}
         # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -172,14 +176,20 @@ store:
   timePartioning:
     - min: ""
       max: ""
+  
+  # InitContainers allows injecting specialized containers that run before app containers. This is meant to pre-configure and tune mounted volume permissions.
+  initContainers: []
 
 query:
   enabled: true
-  # Label to treat as a replica indicator along which data is deduplicated.
+  # Labels to treat as a replica indicator along which data is deduplicated.
   # Still you will be able to query without deduplication using 'dedup=false' parameter.
-  replicaLabel: ""
+  replicaLabels: []
+  # - replica
+  # - prometheus_replica
+  #
   # Enable --query.auto-downsampling option for query.
-  autoDownsampling: false
+  autoDownsampling: true
   # Prefix for API and UI endpoints. This allows thanos UI to be served on a sub-path.
   # This option is analogous to --web.route-prefix of Promethus.
   webRoutePrefix: ""
@@ -261,6 +271,8 @@ query:
     # Set up ingress for the grpc service
     ingress:
       enabled: false
+      # Set default backend for ingress
+      defaultBackend: false
       annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -273,6 +285,11 @@ query:
       #    hosts:
       #      - chart-example.local
   serviceAccount: ""
+
+  psp:
+    enabled: false
+  rbac:
+    enabled: false
 
   # The http endpoint to communicate with other components
   http:
@@ -290,6 +307,8 @@ query:
     # Set up ingress for the http service
     ingress:
       enabled: false
+      # Set default backend for ingress
+      defaultBackend: false
       annotations: {}
         # kubernetes.io/ingress.class: nginx
         # kubernetes.io/tls-acme: "true"
@@ -503,6 +522,8 @@ bucket:
     # Set up ingress for the http service
     ingress:
       enabled: false
+      # Set default backend for ingress
+      defaultBackend: false
       annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -625,7 +646,7 @@ rule:
   ruleOverrideName: ""
   # Rule files for rule
   ruleFiles:
-    alerting_rules.yml: {}
+    alerting_rules.yaml: {}
     # groups:
     #   - name: Instances
     #     rules:
@@ -683,6 +704,8 @@ rule:
     # Set up ingress for the grpc service
     ingress:
       enabled: false
+      # Set default backend for ingress
+      defaultBackend: false
       annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -712,6 +735,8 @@ rule:
     # Set up ingress for the http service
     ingress:
       enabled: false
+      # Set default backend for ingress
+      defaultBackend: false
       annotations: {}
         # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -813,6 +838,8 @@ sidecar:
     # Set up ingress for the grpc service
     ingress:
       enabled: false
+      # Set default backend for ingress
+      defaultBackend: false
       annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -839,6 +866,8 @@ sidecar:
     # Set up ingress for the http service
     ingress:
       enabled: false
+      # Set default backend for ingress
+      defaultBackend: false
       annotations: {}
         # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"

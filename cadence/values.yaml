@@ -8,7 +8,7 @@ debug: false
 server:
   image:
     repository: ubercadence/server
-    tag: 0.7.1
+    tag: 0.13.0
     pullPolicy: IfNotPresent
 
   # Global default settings (can be overridden per service)
@@ -25,6 +25,9 @@ server:
       interval: 30s
     prometheus:
       timerType: histogram
+    statsd: {}
+      #   hostPort: localhost:8125
+
   podAnnotations: {}
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -64,7 +67,7 @@ server:
           # maxConns: 2
 
         sql:
-          driver: "" # mysql
+          pluginName: "" # mysql
           host: ""
           # port: 3306
           database: cadence
@@ -94,7 +97,7 @@ server:
           # maxConns: 2
 
         sql:
-          driver: "" # mysql
+          pluginName: "" # mysql
           host: ""
           # port: 3306
           database: cadence_visibility
@@ -120,6 +123,8 @@ server:
         # enabled: false
       prometheus: {}
         # timerType: histogram
+      statsd: {}
+      #   hostPort: localhost:8125
     podAnnotations: {}
     resources: {}
     nodeSelector: {}
@@ -138,6 +143,8 @@ server:
         # enabled: false
       prometheus: {}
         # timerType: histogram
+      statsd: {}
+      #   hostPort: localhost:8125
     podAnnotations: {}
     resources: {}
     nodeSelector: {}
@@ -156,6 +163,8 @@ server:
         # enabled: false
       prometheus: {}
         # timerType: histogram
+      statsd: {}
+      #   hostPort: localhost:8125
     podAnnotations: {}
     resources: {}
     nodeSelector: {}
@@ -174,6 +183,8 @@ server:
         # enabled: false
       prometheus: {}
         # timerType: histogram
+      statsd: {}
+      #   hostPort: localhost:8125
     podAnnotations: {}
     resources: {}
     nodeSelector: {}
@@ -187,7 +198,7 @@ web:
 
   image:
     repository: ubercadence/web
-    tag: 3.3.2
+    tag: 3.18.1
     pullPolicy: IfNotPresent
 
   service:

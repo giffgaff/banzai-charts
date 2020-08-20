@@ -167,6 +167,7 @@ These setting applicable to nearly all components.
 | $component.grpc.service.annotations | Service definition for grpc service | {} |
 | $component.grpc.service.matchLabels | Pod label selector to match grpc service on. | `{}` |
 | $component.grpc.ingress.enabled | Set up ingress for the grpc service | false |
+| $component.grpc.ingress.defaultBackend | Set up default backend for ingress | false |
 | $component.grpc.ingress.annotations | Add annotations to ingress | {} |
 | $component.grpc.ingress.labels | Add labels to ingress | {} |
 | $component.grpc.ingress.path | Ingress path | "/" |
@@ -176,6 +177,7 @@ These setting applicable to nearly all components.
 | $component.http.service.annotations | Service definition for http service | {} |
 | $component.http.service.matchLabels | Pod label selector to match http service on. | `{}` |
 | $component.http.ingress.enabled | Set up ingress for the http service | false |
+| $component.http.ingress.defaultBackend | Set up default backend for ingress | false |
 | $component.http.ingress.annotations | Add annotations to ingress | {} |
 | $component.http.ingress.labels | Add labels to ingress | {} |
 | $component.http.ingress.path | Ingress path | "/" |
@@ -204,6 +206,7 @@ These values are just samples, for more fine-tuning please check the values.yaml
 | store.livenessProbe  | Set up liveness probe for store available for Thanos v0.8.0+) |  {} |
 | store.readinessProbe  | Set up readinessProbe for store (available for Thanos v0.8.0+) | {}  |
 | timePartioning   |  list of min/max time for store partitions. See more details below. Setting this will create mutlipale thanos store deployments based on the number of items in the list  | [{min: "", max: ""}] |
+| initContainers   |  InitContainers allows injecting specialized containers that run before app containers. This is meant to pre-configure and tune mounted volume permissions.  | [] |
 
 ### Store time partions
 Thanos store supports partition based on time.
@@ -232,8 +235,8 @@ timePartioning:
 | query.replicaCount | Pod replica count | 1 |
 | query.logLevel | Log level | info |
 | query.logFormat | Log format to use. Possible options: logfmt or json. | logfmt |
-| query.replicaLabel | Label to treat as a replica indicator along which data is deduplicated. Still you will be able to query without deduplication using 'dedup=false' parameter. | "" |
-| query.autoDownsampling | Enable --query.auto-downsampling option for query. | false |
+| query.replicaLabels | Labels to treat as a replica indicator along which data is deduplicated. Still you will be able to query without deduplication using 'dedup=false' parameter. | [] |
+| query.autoDownsampling | Enable --query.auto-downsampling option for query. | true |
 | query.webRoutePrefix |Prefix for API and UI endpoints. This allows thanos UI to be served on a sub-path. This option is analogous to --web.route-prefix of Promethus. | "" |
 | query.webExternalPrefix |Static prefix for all HTML links and redirect URLs in the UI query web interface. Actual endpoints are still served on / or the web.route-prefix. This allows thanos UI to be served behind a reverse proxy that strips a URL sub-path | "" |
 | query.webPrefixHeader | Name of HTTP request header used for dynamic prefixing of UI links and redirects. This option is ignored if web.external-prefix argument is set. Security risk: enable this option only if a reverse proxy in front of thanos is resetting the header. The --web.prefix-header=X-Forwarded-Prefix option can be useful, for example, if Thanos UI is served via Traefik reverse proxy with PathPrefixStrip option enabled, which sends the stripped prefix value in X-Forwarded-Prefix header. This allows thanos UI to be served on a sub-path | "" |
@@ -255,6 +258,8 @@ timePartioning:
 | query.autoscaling.targetCPUUtilizationPercentage | 	Target CPU utilization percentage to scale | 50 |
 | query.autoscaling.targetMemoryUtilizationPercentage |	Target memory utilization percentage to scale 50 |
 | query.serviceAccount | Name of the Kubernetes service account to use | "" |
+| query.psp.enabled | Enable pod security policy, it also requires the `query.rbac.enabled` to be set to `true`. | false |
+| query.rbac.enabled | Enable RBAC to use the PSP | false |
 
 ## Rule
 |Name|Description| Default Value|

@@ -26,7 +26,7 @@ spec:
       app.kubernetes.io/name: {{ include "thanos.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: query
-{{ with .Values.query.deploymentMatchLabels }}{{ toYaml . | indent 4 }}{{ end }}
+{{ with .Values.query.deploymentMatchLabels }}{{ toYaml . | indent 6 }}{{ end }}
   template:
     metadata:
       labels:
@@ -56,8 +56,8 @@ spec:
         - "--log.format={{ .Values.query.logFormat }}"
         - "--grpc-address=0.0.0.0:{{ .Values.query.grpc.port }}"
         - "--http-address=0.0.0.0:{{ .Values.query.http.port }}"
-        {{- if .Values.query.replicaLabel }}
-        - "--query.replica-label={{ .Values.query.replicaLabel }}"
+        {{- range .Values.query.replicaLabels }}
+        - "--query.replica-label={{ . }}"
         {{- end }}
         {{- if .Values.query.autoDownsampling }}
         - "--query.auto-downsampling"
@@ -150,7 +150,7 @@ spec:
       {{- with .Values.query.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
       {{- end }}
-      {{- with  .Values.query.serviceAccount }}
+      {{- with  (include "thanos.query.serviceaccount" . ) }}
       serviceAccountName: "{{ . }}"
       {{- end }}
 {{ end }}
