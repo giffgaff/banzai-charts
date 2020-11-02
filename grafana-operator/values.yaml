@@ -44,9 +44,10 @@ customResourceGroupRemap:
   newGroup: "" # name of the new group to map the monitoring.coreos.com to
 
 image:
+  ## TODO change to original repo after release of UID fixes
   registry: quay.io
   repository: integreatly/grafana-operator
-  tag: v3.5.0
+  tag: v3.6.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -70,13 +71,183 @@ grafana:
   image:
     registry: docker.io
     repository: grafana/grafana
-    tag: 7.1.3
+    tag: 7.2.2
 
 grafanaPluginInit:
   image:
     registry: quay.io
     repository: integreatly/grafana_plugins_init
     tag: 0.0.3
+
+#Enable Default Dashboards
+defaultDashboards:
+  enabled: false
+#Enable kubelet Dashboard
+  kubelet:
+    enabled: true
+#Enable prometheus Dashboard
+  prometheus:
+    prometheusSpec:
+      remoteWriteDashboards:
+        enabled: true
+
+  statefulset:
+    enabled: true
+
+  scheduler:
+    enabled: true
+
+  proxy:
+    enabled: true
+
+  prometheus_remote_write:
+    enabled: true
+
+  pod_total:
+    enabled: true
+
+  persistentvolumesusage:
+    enabled: true
+
+  nodes:
+    enabled: true
+
+  node_rsrc_use:
+    enabled: true
+
+  node_cluster_rsrc_use:
+    enabled: true
+
+  namespace_by_workload:
+    enabled: true
+
+  namespace_by_pod:
+    enabled: true
+
+  workload_total:
+    enabled: true
+
+  k8s_resources_workloads_namespace:
+    enabled: true
+
+  k8s_resources_workloads_pod:
+    enabled: true
+
+  k8s_resources_workload:
+    enabled: true
+
+  k8s_resources_pod:
+    enabled: true
+
+  k8s_resources_node:
+    enabled: true
+
+  k8s_resources_namespace:
+    enabled: true
+
+  k8s_resources_cluster:
+    enabled: true
+
+  etcd:
+    enabled: true
+
+  controller_manager:
+    enabled: true
+
+  cluster_total:
+    enabled: true
+
+  apiserver:
+    enabled: true
+
+  logging_dashboard:
+    enabled: true
+    plugins:
+      - name: "grafana-piechart-panel"
+        version: "1.6.0"
+      - name: "grafana-clock-panel"
+        version: "1.1.1"
+
+  thanos:
+    bucket_replicate:
+      enabled: false
+
+    compact:
+      enabled: false
+
+    overview:
+      enabled: false
+
+    query:
+      enabled: false
+
+    receive:
+      enabled: false
+
+    rule:
+      enabled: false
+
+    sidecar:
+      enabled: false
+
+    store:
+      enabled: false
+
+#Enable Default Grafana Instance
+defaultDeployment:
+  enabled: false
+
+  # Don't use ingress to communicate with Grafana
+  client:
+    preferService: true
+
+  server:
+    root_url: ""
+    serve_from_sub_path: false
+
+  ingress:
+    enabled: false
+    tlsEnabled: false
+    tlsSecretName: ""
+    annotations: {}
+    hostname: ""
+    path: "/"
+
+  service:
+    type: ClusterIP
+    annotations: {}
+  log:
+    mode: console
+    level: warn
+
+  security:
+    adminUser: "root"
+    adminPassword: "secret"
+    allow_embedding: false
+
+  auth:
+    disableLoginForm: false
+    disableSignoutMenu: true
+    anonymous: false
+
+  resources: {}
+
+
+defaultDatasouce:
+  enabled: false
+  datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://monitor-prometheus-operato-prometheus:9090
+    isDefault: true
+    version: 1
+    editable: true
+    jsonData:
+      tlsSkipVerify: true
+      timeInterval: "5s"
+
+
 
 rbac:
   # create specifies whether to install and use RBAC rules.
