@@ -43,6 +43,12 @@ spec:
             - --tls-private-key-file=/etc/webhook/certs/tls.key
             - --telemetry-listen-address=:9090
             - --provider={{ required "Secret provider is required!" .Values.provider }}
+            {{- with .Values.defaultImagePullSecret }}
+            - --default-image-pull-secret={{ . }}
+            {{- end }}
+            {{- with .Values.defaultImagePullSecretNamespace }}
+            - --default-image-pull-secret-namespace={{ . }}
+            {{- end }}
           volumeMounts:
             - name: certs
               mountPath: /etc/webhook/certs
