@@ -20,7 +20,10 @@ spec:
       app.kubernetes.io/component: sidecar
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace }}
+    {{- range .Values.sidecar.metrics.serviceMonitor.namespaces }}
+    - {{ . }}
+    {{- end }}
+
   endpoints:
     - port: http
       interval: {{ .Values.sidecar.metrics.serviceMonitor.interval | default "15s" }}

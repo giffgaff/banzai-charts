@@ -1058,6 +1058,7 @@ sidecar:
     # Enable ServiceMonitor https://github.com/coreos/prometheus-operator
     serviceMonitor:
       enabled: false
+      namespaces: []
       # Labels for prometheus-operator to find servicemonitor
       labels: {}
   # The grpc endpoint to communicate with other components
